@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Vue.js DZ 1.4</title>
+		<link rel="stylesheet" href="../../style.css" />
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+	<style>
+		.dz_1_4 p {
+			color: #fff;
+		}
+		.dz_1_4 p.qq {
+			color: #5c6bc0;
+		}
+		.dz_1_4 .actions {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+		}
+		.dz_1_4 .actions button {
+			width: 45%;
+			justify-content: center;
+		}
+		.tax_note {
+			font-size: 1rem;
+			margin: 0 0 0.625rem;
+			color: #e57373 !important;
+		}
+		.currency_red {
+			color: #e57373;
+		}
+		.currency_green {
+			color: #3c6;
+		}
+	</style>
+	<body class="result_body">
+		<div class="page_wrapper">
+			<h1>Задача 4</h1>
+			<p class="task_txt">
+				Задача 4. “Рахунок у банку”<br />
+				Вимоги:<br />
+				1) Спочатку сума дорівнює 0грн. Змінити суму у гривнях можна або зарахуванням на рахунок, або зняттям.<br />
+				2) Сума автоматично переводиться у долари та євро (фіксований курс задається у data).<br />
+				3) можливість зарахувати суму (контролювати, щоб не була від’ємною)<br />
+				4) можливість зняти (щоб не можна зняти більше ніж є на рахунку)<br />
+				5) при виконанні зняття i зарахування коштів вираховувати 3% від суми (відображати кількість відсотків автоматично)<br /><br />
+				При зміні суми :<br />
+				- якщо було зняття, то суму відображати червоним<br />
+				- якщо було зарахування, то суму відображати зеленим<br />
+				Якщо сума валюти менша за 100 то відображати червоним кольором, інакше - зеленим
+			</p>
+
+			<div id="app" class="vue">
+				<div class="sandbox dz_1_4">
+					<p>
+						Сума на рахунку: <span :class="balanceStyle">{{balance.toFixed(2)}} грн.</span>
+						<span>
+							<span :class="balanceUSDStyle">({{balanceUSD.toFixed(2)}}$</span> /
+							<span :class="balanceEURStyle">{{balanceEUR.toFixed(2)}}€)</span>
+						</span>
+					</p>
+					<input type="number" v-model="fundsValue" />
+					<p class="tax_note">Відсотки за обслуговування: {{taxCalc()}} грн.</p>
+					<div class="actions">
+						<button type="button" class="class" @click="depositFunds">Зарахувати</button>
+						<button type="button" class="class" @click="withdrawFunds">Зняти</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			// 1. Імпортуємо createApp
+
+			const { createApp } = Vue
+
+			// 2. Створюємо об'єкт додатку
+			const app = createApp({
+				data() {
+					return {
+						balance: 0,
+						rateUSD: 36.5,
+						rateEUR: 38.5,
+						operTax: 0.03,
+						fundsValue: null,
+						balanceUSD: 0,
+						balanceEUR: 0,
+						withdrawal: null,
+					}
+				},
+				methods: {
+					depositFunds() {
+						if (this.fundsValue > 0) {
+							this.balance += this.fundsValue - this.taxCalc()
+							this.fundsValue = 0
+							this.calcCurrency()
+							this.withdrawal = false
+						}
+					},
+					withdrawFunds() {
+						if (this.fundsValue > 0 && this.fundsValue <= this.balance) {
+							this.balance -= this.fundsValue - this.taxCalc()
+							this.fundsValue = 0
+							this.calcCurrency()
+							this.withdrawal = true
+						}
+					},
+					calcCurrency() {
+						this.balanceUSD = this.balance / this.rateUSD
+						this.balanceEUR = this.balance / this.rateEUR
+					},
+					taxCalc() {
+						return (this.fundsValue * this.operTax).toFixed(2)
+					},
+				},
+				computed: {
+					balanceUSDStyle() {
+						let balanceUSDClass
+						if (this.balanceUSD < 100 && this.balanceUSD > 0) balanceUSDClass = 'currency_red'
+						else if (this.balanceUSD >= 100) balanceUSDClass = 'currency_green'
+						return balanceUSDClass
+					},
+					balanceEURStyle() {
+						let balanceEURClass
+						if (this.balanceEUR < 100 && this.balanceEUR > 0) balanceEURClass = 'currency_red'
+						else if (this.balanceEUR >= 100) balanceEURClass = 'currency_green'
+						return balanceEURClass
+					},
+					balanceStyle() {
+						// return this.withdrawal ? 'currency_red' : 'currency_green'
+						return this.withdrawal === null ? '' : this.withdrawal ? 'currency_red' : 'currency_green'
+					},
+				},
+			})
+
+			// 3. Монтуємо додаток
+			app.mount('#app')
+		</script>
+	</body>
+</html>

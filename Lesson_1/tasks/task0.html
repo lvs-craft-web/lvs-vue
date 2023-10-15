@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Vue.js DZ 1.1</title>
+		<link rel="stylesheet" href="../../style.css" />
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+	<body>
+		<h1>Задача 1</h1>
+		<p>
+			Вводиться кількість пасажирів. Вивести:<br />
+			скільки потрібно автобусів (кожен автобус на 20 місць)<br />
+			скільки пляшок води (кожному пасажиру 2 пляшки)<br />
+			скільки бутербродів (кожному пасажиру 3 бутерброди)
+		</p>
+		<div id="app">
+			<h1>{{message}}</h1>
+			<div>Product 1 price: <span> {{price1}} </span></div>
+			<div>Product 2 price: <span> {{price2}} </span></div>
+			<div>Total: <span> {{price1+price2}} </span></div>
+			<img :src="rcPath" :width="rcWidth" :alt="rcAlt" />
+			<!-- ---------------- -->
+			<hr />
+			<label>
+				Number 1
+				<input type="number" v-model="num1" />
+			</label>
+			<hr />
+			<label>
+				Number 2
+				<input type="number" v-model.number="num2" />
+			</label>
+			<hr />
+			<div>Sum: <span> {{num1+num2}} </span></div>
+			<div>Prod: <span> {{num1*num2}} </span></div>
+			<div>Sum meth: <span> {{getSum()}} </span></div>
+			<div>Sum computed: <span> {{sum3}} </span></div>
+			<hr />
+			<label>Full name <input type="text" v-model.lazy="fullName" /></label>
+			<div>First name: <span> {{firstName}} </span></div>
+			<div>Last name: <span> {{lastName}} </span></div>
+			<button @click="prodBtn" class="button">Надіслати</button>
+			<div>Btn prod: <span> {{prod2}} </span></div>
+		</div>
+		<script>
+			// 1. Імпортуємо createApp
+			const { createApp } = Vue
+
+			// 2. Створюємо об'єкт додатку
+			const app = createApp({
+				data() {
+					return {
+						message: 'Welcome!',
+						price1: 100,
+						price2: 150,
+						rcPath: '../../images/rocket.ico',
+						rcAlt: 'The Rocket!',
+						rcWidth: 70,
+						num1: 4,
+						num2: 5,
+						firstName: null,
+						lastName: null,
+						prod2: null,
+					}
+				},
+				methods: {
+					getSum() {
+						return this.num1 + this.num2
+						// return this.num1 === this.num2 ? true : false
+					},
+					prodBtn() {
+						this.prod2 = this.num1 * this.num2
+					},
+				},
+				computed: {
+					sum3() {
+						return this.num1 + this.num2
+					},
+					fullName: {
+						get() {
+							if (this.firstName && this.lastName) {
+								return `${this.firstName} ${this.lastName}`
+							}
+							return null
+						},
+						set(newVal) {
+							if (newVal) {
+								const splitVal = newVal.split(' ')
+								if (splitVal.length == 2) {
+									this.firstName = splitVal[0]
+									this.lastName = splitVal[1]
+								}
+							}
+						},
+					},
+				},
+			})
+
+			// 3. Монтуємо додаток
+			app.mount('#app')
+		</script>
+	</body>
+</html>

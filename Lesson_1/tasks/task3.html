@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Vue.js DZ 1.3</title>
+		<link rel="stylesheet" href="../../style.css" />
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+	<body class="result_body">
+		<div class="page_wrapper">
+			<h1>Задача 3</h1>
+			<p class="task_txt">
+				Задано початок та кінець діапазону. При натисканні на кнопку випадковим чином генерувати значення з вказаного діапазону та відображати
+				його.
+			</p>
+
+			<div id="app" class="vue">
+				<div class="sandbox dz_1_3">
+					<input type="number" placeholder="Введіть початок діапазону" v-model.lazy="rngMin" />
+					<input type="number" placeholder="Введіть кінець діапазону" v-model.lazy="rngMax" />
+					<p>Випадкове значення діапазону {{message()}}: {{rndNum}}</p>
+
+					<button type="button" class="class" @click="getNum()">Тиць</button>
+				</div>
+			</div>
+		</div>
+		<script>
+			// 1. Імпортуємо createApp
+
+			const { createApp } = Vue
+
+			// 2. Створюємо об'єкт додатку
+			const app = createApp({
+				data() {
+					return {
+						rngMin: null,
+						rngMax: null,
+						rndNum: null,
+					}
+				},
+				methods: {
+					getNum() {
+						this.rndNum = Math.floor(Math.random() * (this.rngMax - this.rngMin + 1)) + this.rngMin
+					},
+					message() {
+						if (this.rngMin && this.rngMax) {
+							return `(${this.rngMin} - ${this.rngMax})`
+						}
+						return null
+					},
+				},
+			})
+
+			// 3. Монтуємо додаток
+			app.mount('#app')
+		</script>
+	</body>
+</html>

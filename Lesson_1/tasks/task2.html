@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Vue.js DZ 1.2</title>
+		<link rel="stylesheet" href="../../style.css" />
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+	<body class="result_body">
+		<div class="page_wrapper">
+			<h1>Задача 2</h1>
+			<p class="task_txt">
+				Вводиться номер місяця. Автоматично виводити рекомендований одяг (зима – пальто, літо – шорти ….). Також автоматично виводити зображення
+				з відповідним зображенням лісу (зима – ліс зі снігом, осінь – жовтий ліс, …).
+			</p>
+
+			<div id="app" class="vue">
+				<div class="sandbox dz_1_2">
+					<input type="number" placeholder="Введіть номер місяця" v-model.number="monthNumber" min="1" max="12" />
+					<p :style="seasonDisplayStyle()">{{determineSeason().cloth}}</p>
+					<img :src="determineSeason().imgPath" :alt="determineSeason().seasonAlt" :style="seasonDisplayStyle()" />
+				</div>
+			</div>
+		</div>
+		<script>
+			// 1. Імпортуємо createApp
+
+			const { createApp } = Vue
+
+			// Константи
+			const seasons = {
+				winter: {
+					cloth: 'Пальто',
+					imgPath: '../../images/dz_1/winter.jpg',
+					seasonAlt: 'Зима',
+				},
+				spring: {
+					cloth: 'Кофта',
+					imgPath: '../../images/dz_1/spring.jpg',
+					seasonAlt: 'Весна',
+				},
+				summer: {
+					cloth: 'Шорти',
+					imgPath: '../../images/dz_1/summer.jpg',
+					seasonAlt: 'Літо',
+				},
+				autumn: {
+					cloth: 'Куртка',
+					imgPath: '../../images/dz_1/autumn.jpg',
+					seasonAlt: 'Осінь',
+				},
+			}
+
+			// 2. Створюємо об'єкт додатку
+			const app = createApp({
+				data() {
+					return {
+						monthNumber: null,
+					}
+				},
+				methods: {
+					determineSeason() {
+						let season
+						switch (this.monthNumber) {
+							case 1:
+							case 2:
+							case 12:
+								season = seasons.winter
+								break
+							case 3:
+							case 4:
+							case 5:
+								season = seasons.spring
+								break
+							case 6:
+							case 7:
+							case 8:
+								season = seasons.summer
+								break
+							case 9:
+							case 10:
+							case 11:
+								season = seasons.autumn
+								break
+							default:
+								season = { cloth: 'Invalid month', imgPath: ' ', seasonAlt: ' ' }
+						}
+						return season
+					},
+					seasonDisplayStyle() {
+						return {
+							display: this.determineSeason().cloth === 'Invalid month' ? 'none' : 'block',
+						}
+					},
+				},
+			})
+
+			// 3. Монтуємо додаток
+			app.mount('#app')
+		</script>
+	</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Vue.js DZ 1.5</title>
+		<link rel="stylesheet" href="../../style.css" />
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+	<style>
+		.dz_1_5 button {
+			justify-content: center;
+		}
+		.d_block {
+			display: block;
+		}
+		.d_none {
+			display: none;
+		}
+	</style>
+	<body class="result_body">
+		<div class="page_wrapper">
+			<h1>Задача 5</h1>
+			<p class="task_txt">
+				Додаток містить масив об'єктів (логін, пароль) -- існуючі логіни i паролі. Користувач вводить логін i пароль, а програма повідомляє чи
+				може користувач бути авторизованим (чи є він одним з масиву).
+			</p>
+
+			<div id="app" class="vue">
+				<div class="sandbox dz_1_5">
+					<label>
+						Login
+						<input type="text" v-model="userLogin" placeholder="Введіть логін" />
+					</label>
+					<label>
+						Password
+						<input type="password" v-model="userPassword" placeholder="Введіть пароль" />
+					</label>
+					<button type="button" @click="checkAuthorization">Тиць</button>
+					<p :class="{d_none: !msgShow, d_block: msgShow }">{{ authenticationMessage }}</p>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			// 1. Імпортуємо createApp
+
+			const { createApp } = Vue
+
+			const accArr = [
+				{
+					login: 'aaa',
+					password: '111',
+				},
+				{
+					login: 'bbb',
+					password: '222',
+				},
+			]
+			// 2. Створюємо об'єкт додатку
+			const app = createApp({
+				data() {
+					return {
+						userLogin: null,
+						userPassword: null,
+						isAuthenticated: false,
+						msgShow: false,
+					}
+				},
+				computed: {
+					authenticationMessage() {
+						if (this.isAuthenticated) {
+							return 'Успішна авторизація!'
+						} else {
+							return 'Неуспішна авторизація!'
+						}
+					},
+				},
+				methods: {
+					checkAuthorization() {
+						for (const acc of accArr) {
+							if (acc.login === this.userLogin && acc.password === this.userPassword) {
+								this.isAuthenticated = true
+								this.msgShow = true
+								return
+							}
+						}
+						this.isAuthenticated = false
+						this.msgShow = true
+					},
+				},
+			})
+
+			// 3. Монтуємо додаток
+			app.mount('#app')
+		</script>
+	</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Vue.js DZ 1.1</title>
+		<link rel="stylesheet" href="../../style.css" />
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+	<body class="result_body">
+		<div class="page_wrapper">
+			<h1>Задача 1</h1>
+			<p class="task_txt">
+				Вводиться кількість пасажирів. Вивести:<br />
+				скільки потрібно автобусів (кожен автобус на 20 місць)<br />
+				скільки пляшок води (кожному пасажиру 2 пляшки)<br />
+				скільки бутербродів (кожному пасажиру 3 бутерброди)
+			</p>
+			<div id="app" class="vue">
+				<div class="sandbox">
+					<label>
+						Введіть кількість пасажирів
+						<input type="number" v-model.number="passengerAmount" />
+					</label>
+					<p>Потрібно автобусів: <span> {{getBusAmount}} </span></p>
+					<p>Потрібно пляшок води: <span>{{getWaterAmount}}</span></p>
+					<p>Потрібно бутербродів: <span>{{getSnackAmount}}</span></p>
+				</div>
+			</div>
+		</div>
+		<script>
+			// 1. Імпортуємо createApp
+			const { createApp } = Vue
+
+			// Константи
+			const busCapacity = 20
+			const waterPerPassenger = 2
+			const snackPerPassenger = 3
+
+			// 2. Створюємо об'єкт додатку
+			const app = createApp({
+				data() {
+					return {
+						passengerAmount: null,
+					}
+				},
+				computed: {
+					getBusAmount() {
+						return Math.ceil(this.passengerAmount / busCapacity)
+					},
+					getWaterAmount() {
+						return this.passengerAmount * waterPerPassenger
+					},
+					getSnackAmount() {
+						return this.passengerAmount * snackPerPassenger
+					},
+				},
+			})
+
+			// 3. Монтуємо додаток
+			app.mount('#app')
+		</script>
+	</body>
+</html>
