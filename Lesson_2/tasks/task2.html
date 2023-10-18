@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Vue.js DZ 2.2</title>
+		<link rel="icon" type="image/x-icon" href="../../favicon.ico" />
+		<link rel="stylesheet" href="../../style.css" />
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+
+	<body class="result_body">
+		<div class="page_wrapper">
+			<h1>Задача 2</h1>
+			<p class="task_txt">
+				З випадаючого списку вибираємо клас квитка у літаку. Якщо <br />
+				1) бізнес - виводимо елементи для вибору газети та коньяку (якщо вибрано коньяк, то запропонувати закуску (так/ні)), на фоні зображення
+				бізнес кают <br />
+				2) економ – виводимо елементи для вибору типу пива i чипсів, на фоні хмарки.
+			</p>
+
+			<div id="app" class="vue">
+				<div class="sandbox dz_2_2">
+					<label>
+						Оберіть клас квитка
+						<select v-model="flyTicketClass">
+							<option value="business">Бізнес клас</option>
+							<option value="economy">Економ клас</option>
+						</select>
+					</label>
+					<!-- Бізнес клас -->
+					<div class="business_class fly_class" v-if="flyTicketClass === 'business'">
+						<h4>Бізнес клас</h4>
+						<select v-model="businessOptions">
+							<option value="newspapers">Газети</option>
+							<option value="cognac">Коньяк</option>
+						</select>
+						<div class="cognac_snacks" v-if="businessOptions === 'cognac'">
+							<p>Бажаєте закуски до коньяку?</p>
+							<div class="cognac_snacks_q">
+								<button type="button" class="">Так</button>
+								<button type="button" class="">Ні</button>
+							</div>
+						</div>
+					</div>
+					<!-- Економ клас -->
+					<div class="economy_class fly_class" v-else-if="flyTicketClass === 'economy'">
+						<h4>Економ клас</h4>
+						<div class="economy_options">
+							<label>
+								<p>Оберіть тип пива</p>
+								<select>
+									<option selected disabled></option>
+									<option value="ipa">IPA</option>
+									<option value="lager">Lager</option>
+									<option value="ale">Ale</option>
+								</select>
+							</label>
+							<label>
+								<p>Оберіть чипси</p>
+								<select>
+									<option selected disabled></option>
+									<option value="lays">Lays</option>
+									<option value="pringles">Pringles</option>
+									<option value="trash">Інша гидота</option>
+								</select>
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			// 1. Імпортуємо createApp
+
+			const { createApp } = Vue
+
+			// 2. Створюємо об'єкт додатку
+			const app = createApp({
+				data() {
+					return {
+						flyTicketClass: null,
+						businessOptions: null,
+					}
+				},
+				methods: {},
+				computed: {},
+			})
+
+			// 3. Монтуємо додаток
+			app.mount('#app')
+		</script>
+		<style>
+			.vue {
+				justify-content: stretch;
+			}
+			.dz_2_2 {
+				width: 100%;
+			}
+			.dz_2_2 select {
+				margin-left: 1rem;
+			}
+			.fly_class {
+				padding-bottom: 2rem;
+				min-height: 400px;
+				overflow: hidden;
+				border-radius: 1rem;
+				display: flex;
+				flex-direction: column;
+			}
+			.fly_class select {
+				flex-grow: 0;
+				margin: 0 2rem;
+			}
+			.fly_class h4 {
+				color: #fbc02d;
+				border-bottom: 0.125rem solid #5c6bc0;
+				padding: 1rem;
+				margin-top: 0;
+				font-size: 2rem;
+				background-color: rgba(0, 0, 0, 0.7);
+			}
+			.business_class {
+				background: url(../../images/dz_2/business_class.jpg) no-repeat 50% 50% / cover;
+			}
+			.economy_class {
+				background: url(../../images/dz_2/clouds.jpg) no-repeat 50% 50% / cover;
+			}
+			.cognac_snacks {
+				padding: 0 2rem;
+			}
+			.cognac_snacks > p {
+				background: rgba(0, 0, 0, 0.65);
+				padding: 0.65rem 1rem;
+				border-radius: 0.6rem;
+			}
+			.cognac_snacks_q {
+				display: flex;
+				justify-content: space-between;
+			}
+			.cognac_snacks_q button {
+				width: 40%;
+				justify-content: center;
+			}
+			.economy_options {
+				display: flex;
+				flex-direction: row;
+				gap: 1rem;
+				justify-content: space-around;
+			}
+			.economy_options label {
+				display: flex;
+				flex-direction: column;
+				width: 40%;
+			}
+			.economy_options label select {
+				width: 100%;
+			}
+		</style>
+	</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Vue.js DZ 2.3</title>
+		<link rel="icon" type="image/x-icon" href="../../favicon.ico" />
+		<link rel="stylesheet" href="../../style.css" />
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+
+	<body class="result_body">
+		<div class="page_wrapper">
+			<h1>Задача 3</h1>
+			<p class="task_txt">
+				Елемент тренажера англійської. Виводимо зображення елемента i слово. Користувач вводить відповідь. Якщо вірно – відтворюємо фразу
+				«Добре. Молодець!» (i додаємо зелену рамку до елемента), якщо ні - то відтворюємо фразу «Невірно, спробуйте ще раз» (i додаємо червону
+				рамку).
+			</p>
+
+			<div id="app" class="vue">
+				<div class="sandbox dz_2_3" :class="{[checkColor]:wordCheck}">
+					<div class="img_box">
+						<img :src="imgShow" />
+					</div>
+					<label for="lang_Q" class="eng_word">{{engWord}}</label>
+					<input id="lang_Q" type="text" class="ua_word" v-model.lazy="uaInput" />
+					<div class="actions">
+						<button type="button" class="check_btn" @click="wordCheck">Перевірити</button>
+						<button v-if="checkPass && !isLastTask" type="button" @click="nextQ">Далі</button>
+					</div>
+					<div class="msg" v-if="wordChecked" :class="{[checkColor]:wordCheck}">
+						<p v-if="checkPass">Добре. Молодець!</p>
+						<p v-else>Невірно, спробуйте ще раз</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			// 1. Імпортуємо createApp
+
+			const { createApp } = Vue
+
+			// Константи
+			const wordsArr = [
+				{
+					imgPath: '../../images/dz_2/owl.svg',
+					en: 'owl',
+					ua: 'сова',
+				},
+				{
+					imgPath: '../../images/dz_2/duck.svg',
+					en: 'duck',
+					ua: 'качка',
+				},
+				{
+					imgPath: '../../images/dz_2/rocket.svg',
+					en: 'rocket',
+					ua: 'ракета',
+				},
+				{
+					imgPath: '../../images/dz_2/sunglasses.svg',
+					en: 'sunglasses',
+					ua: 'окуляри',
+				},
+			]
+
+			// 2. Створюємо об'єкт додатку
+			const app = createApp({
+				data() {
+					return {
+						uaInput: null,
+						checkPass: null,
+						wordChecked: false,
+						nextTask: 0,
+						checkColor: '',
+					}
+				},
+				methods: {
+					wordCheck() {
+						if (this.uaInput) {
+							this.checkPass = this.uaInput.toLowerCase() === this.uaWord
+							this.wordChecked = true
+							this.uaInput = null
+							this.checkColor = this.checkPass ? 'correct' : 'wrong'
+						}
+					},
+					nextQ() {
+						this.nextTask += 1
+						this.wordChecked = false
+						this.checkPass = false
+						this.checkColor = null
+					},
+				},
+				computed: {
+					imgShow() {
+						return wordsArr[this.nextTask].imgPath
+					},
+					engWord() {
+						return wordsArr[this.nextTask].en
+					},
+					uaWord() {
+						return wordsArr[this.nextTask].ua
+					},
+					isLastTask() {
+						return this.nextTask === wordsArr.length - 1
+					},
+				},
+			})
+
+			// 3. Монтуємо додаток
+			app.mount('#app')
+		</script>
+		<style>
+			.dz_2_3 {
+				transition: all 0.3s ease 0s;
+				display: block;
+				border: 5px solid rgba(0, 0, 0, 0);
+				padding: 2rem 1rem 1rem;
+				border-radius: 1rem;
+			}
+			.img_box {
+				text-align: center;
+			}
+			.img_box img {
+				width: 12rem;
+			}
+			.eng_word {
+				text-transform: capitalize;
+				font-size: 1.625rem;
+				justify-content: center;
+				margin: 1rem 0;
+			}
+			.ua_word {
+				width: 100%;
+			}
+			.correct {
+				border-color: #3c6;
+				color: #3c6;
+				background: rgba(51, 204, 102, 0.03);
+			}
+			.wrong {
+				border-color: #f66;
+				color: #f66;
+				background: rgba(255, 102, 102, 0.03);
+			}
+			.actions {
+				display: flex;
+				justify-content: space-between;
+				padding: 1rem 0 0;
+				gap: 2rem;
+			}
+			.actions button {
+				flex-grow: 1;
+				justify-content: center;
+			}
+			.msg {
+				background: none;
+			}
+			.msg p {
+				padding-right: 0;
+				text-align: center;
+			}
+		</style>
+	</body>
+</html>

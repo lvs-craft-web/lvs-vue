@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Vue.js DZ 2.5</title>
+		<link rel="icon" type="image/x-icon" href="../../favicon.ico" />
+		<link rel="stylesheet" href="../../style.css" />
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+	<body class="result_body">
+		<div class="page_wrapper">
+			<h1>Задача 5</h1>
+			<p class="task_txt">Самостійно сформуйте масив даних та виведіть фрагмент на зразок поданого (дані не обов'язково повинні співпадати)</p>
+
+			<div id="app" class="vue">
+				<div class="sandbox dz_2_5">
+					<div v-for="site in sites" :key="site.id" class="site_card">
+						<a :href="site.link" class="site_card_link">
+							<div class="site_card_hdr">
+								<img :src="site.favIcoSrc" class="site_card_logo" />
+								<span>{{site.domainName}}</span>
+							</div>
+							<h4 class="site_card_title">{{site.title}}</h4>
+							<p class="site_card_description">{{site.description}}</p>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			// 1. Імпортуємо createApp
+
+			const { createApp } = Vue
+
+			const sitesList = [
+				{
+					id: 1,
+					domainName: 'uk.javascript.info',
+					favIcoSrc: '../../images/dz_2/t5/uk.javascript.info.ico',
+					link: 'https://uk.javascript.info',
+					title: 'Сучасний підручник з JavaScript',
+					description:
+						'Підручник із сучасного JavaScript: прості, але докладні пояснення з прикладами та завданнями, включаючи: замикання, DOM та події, об`єктно-орієнтоване програмування тощо.',
+				},
+				{
+					id: 2,
+					domainName: 'buefy.org',
+					favIcoSrc: '../../images/dz_2/t5/buefy.org.ico',
+					link: 'https://buefy.org/documentation/start/',
+					title: 'Buefy: lightweight UI components for Vue.js based on Bulma',
+					description:
+						'Leasy. Travelstop. Moonlight. Buefy is a lightweight library of responsive UI components for Vue.js based on Bulma framework and design.',
+				},
+				{
+					id: 3,
+					domainName: 'nashformat.ua',
+					favIcoSrc: '../../images/dz_2/t5/nashformat.ua.ico',
+					link: 'https://buefy.org/documentation/start/',
+					title: 'Книжковий інтернет-магазин Наш Формат',
+					description:
+						'Інтернет-магазин книг Наш Формат - 53000+ книжок ⭐ найкращих авторів світу Зручні замовлення Швидка доставка Доступні ціни. Замовляйте та читайте книги! Книжковий інтернет-магазин Наш Формат',
+				},
+			]
+
+			// 2. Створюємо об'єкт додатку
+			const app = createApp({
+				computed: {
+					sites() {
+						return sitesList
+					},
+				},
+			})
+
+			// 3. Монтуємо додаток
+			app.mount('#app')
+		</script>
+		<style>
+			.dz_2_5 {
+				gap: 2rem;
+			}
+			.site_card {
+				display: flex;
+				flex-direction: column;
+				color: #fff;
+			}
+			.site_card:hover .site_card_title {
+				text-decoration: underline;
+			}
+			.site_card_hdr {
+				display: flex;
+				align-items: center;
+				justify-content: flex-start;
+			}
+			.site_card_logo {
+				height: 1.5rem;
+			}
+			.site_card_hdr span {
+				font-size: 1rem;
+				padding-left: 1rem;
+				color: #fff;
+			}
+			.site_card_title {
+				font-size: 1.2rem;
+				margin: 0;
+				padding: 0.5rem 0 0;
+				color: #fff;
+			}
+			.site_card_description {
+				font-size: 0.9rem;
+				color: #fff;
+				margin-top: 0.6rem;
+			}
+		</style>
+	</body>
+</html>

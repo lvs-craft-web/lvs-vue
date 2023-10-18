@@ -4,13 +4,13 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Vue.js DZ 1.5</title>
+		<title>Vue.js DZ 2.1</title>
 		<link rel="icon" type="image/x-icon" href="../../favicon.ico" />
 		<link rel="stylesheet" href="../../style.css" />
 		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 	</head>
 	<style>
-		.dz_1_5 button {
+		.dz_2_1 button {
 			justify-content: center;
 		}
 		.d_block {
@@ -19,17 +19,26 @@
 		.d_none {
 			display: none;
 		}
+		.blueError {
+			color: #64b5f6;
+		}
+		.redError {
+			color: #ef5350;
+		}
 	</style>
 	<body class="result_body">
 		<div class="page_wrapper">
-			<h1>Задача 5</h1>
+			<h1>Задача 1</h1>
 			<p class="task_txt">
-				Додаток містить масив об'єктів (логін, пароль) -- існуючі логіни i паролі. Користувач вводить логін i пароль, а програма повідомляє чи
-				може користувач бути авторизованим (чи є він одним з масиву).
+				Вводимо логіна і пароль. Якщо логін вірний відображаємо смайл. Якщо ні, то: <br />
+				1) якщо логін = Іван – колір повідомлення про помилку синій <br />
+				2) якщо хтось інший, то колір повідомлення червоний <br />
+				Ivan - 111 <br />
+				bbbb - 222
 			</p>
 
 			<div id="app" class="vue">
-				<div class="sandbox dz_1_5">
+				<div class="sandbox dz_2_1">
 					<label>
 						Login
 						<input type="text" v-model="userLogin" placeholder="Введіть логін" />
@@ -39,7 +48,8 @@
 						<input type="password" v-model="userPassword" placeholder="Введіть пароль" />
 					</label>
 					<button type="button" @click="checkAuthorization">Тиць</button>
-					<p :class="{d_none: !msgShow, d_block: msgShow }">{{ authenticationMessage }}</p>
+					<p :class="getMsgClassNames">{{ authenticationMessage() }}</p>
+					<img v-if="isAuthenticated" src="../../images/dz_2/emoji_2.1.png" alt="WoW Emoji" width="250" />
 				</div>
 			</div>
 		</div>
@@ -51,11 +61,11 @@
 
 			const accArr = [
 				{
-					login: 'aaa',
+					login: 'Ivan',
 					password: '111',
 				},
 				{
-					login: 'bbb',
+					login: 'bbbb',
 					password: '222',
 				},
 			]
@@ -63,32 +73,32 @@
 			const app = createApp({
 				data() {
 					return {
-						userLogin: null,
-						userPassword: null,
+						userLogin: '',
+						userPassword: '',
 						isAuthenticated: false,
 						msgShow: false,
 					}
 				},
-				computed: {
+				methods: {
 					authenticationMessage() {
-						if (this.isAuthenticated) {
-							return 'Успішна авторизація!'
-						} else {
-							return 'Неуспішна авторизація!'
-						}
+						return this.isAuthenticated ? 'Успішна авторизація!' : 'Неуспішна авторизація!'
+					},
+					checkAuthorization() {
+						this.isAuthenticated = accArr.some((acc) => acc.login === this.userLogin && acc.password === this.userPassword)
+						this.msgShow = true
 					},
 				},
-				methods: {
-					checkAuthorization() {
-						for (const acc of accArr) {
-							if (acc.login === this.userLogin && acc.password === this.userPassword) {
-								this.isAuthenticated = true
-								this.msgShow = true
-								return
-							}
+				computed: {
+					isIvan() {
+						return this.userLogin === 'Ivan'
+					},
+					getMsgClassNames() {
+						return {
+							d_none: !this.msgShow,
+							d_block: this.msgShow,
+							blueError: !this.isAuthenticated && this.isIvan,
+							redError: !this.isAuthenticated && !this.isIvan,
 						}
-						this.isAuthenticated = false
-						this.msgShow = true
 					},
 				},
 			})

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Vue.js DZ 2.6</title>
+		<link rel="icon" type="image/x-icon" href="../../favicon.ico" />
+		<link rel="stylesheet" href="../../style.css" />
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+	<body class="result_body">
+		<div class="page_wrapper">
+			<h1>Задача 6</h1>
+			<p class="task_txt">
+				На кухню поступають замовлення. Спочатку ми додаємо їх у список “Очікують на виконання”, якщо повар береться робити — замовлення
+				переходить у список “Виконуються”, якщо замовлення виконано — переходить у список “Готові до виносу”. Якщо натиснути на “Подано” -
+				страва зникає з таблиці
+			</p>
+
+			<div id="app" class="vue" style="justify-content: normal">
+				<div class="sandbox dz_2_6">
+					<div class="new_dish">
+						<label>
+							<span>Нова замовлена страва</span>
+							<input type="text" v-model="newDish" />
+						</label>
+						<button type="button" @click="addNewDish">Додати</button>
+					</div>
+					<div v-if="newDishAdded" class="kitchen_table">
+						<ul class="waiting_list">
+							<li v-for="(dish, index) in waitingList" :key="index">
+								{{dish.dishName}}
+								<button type="button" @click="toPrepareDish(index)">Готувати</button>
+							</li>
+						</ul>
+						<ul class="processing_list">
+							<li v-for="(dish, index) in processingList" :key="index">
+								{{dish.dishName}}
+								<button type="button" @click="cookedDish(index)">Приготовано</button>
+							</li>
+						</ul>
+						<ul class="completed_list">
+							<li v-for="(dish, index) in completedList" :key="index">
+								{{dish.dishName}}
+								<button type="button" @click="dishServed(index)">Подано</button>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			// 1. Імпортуємо createApp
+
+			const { createApp } = Vue
+
+			// 2. Створюємо об'єкт додатку
+			const app = createApp({
+				data() {
+					return {
+						newDish: null,
+						waitingList: [],
+						processingList: [],
+						completedList: [],
+						newDishAdded: null,
+					}
+				},
+				methods: {
+					addNewDish() {
+						if (this.newDish) {
+							this.waitingList.push({ dishName: this.newDish })
+							this.newDish = null
+							this.newDishAdded = true
+						}
+					},
+					toPrepareDish(index) {
+						const dish = this.waitingList.splice(index, 1)[0]
+						this.processingList.push(dish)
+					},
+					cookedDish(index) {
+						const dish = this.processingList.splice(index, 1)[0]
+						this.completedList.push(dish)
+					},
+					dishServed(index) {
+						this.completedList.splice(index, 1)
+					},
+				},
+			})
+
+			// 3. Монтуємо додаток
+			app.mount('#app')
+		</script>
+		<style>
+			.dz_2_6 {
+				gap: 2rem;
+				width: 100%;
+			}
+			.new_dish {
+				display: flex;
+				flex-direction: row;
+				justify-content: center;
+				gap: 1rem;
+			}
+			.new_dish span {
+				font-size: 1rem;
+			}
+			.new_dish button {
+				margin-bottom: 0;
+				height: 100%;
+			}
+			.kitchen_table {
+				display: grid;
+				grid-template-columns: repeat(3, 1fr);
+				grid-template-rows: 1fr;
+				gap: 0.5rem;
+			}
+			.kitchen_table ul {
+				margin: 0;
+				padding: 0;
+				list-style-type: none;
+				border: 1px solid #3c6;
+			}
+			.kitchen_table ul li {
+				border-bottom: 1px solid #3c6;
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				align-items: center;
+				font-size: 1rem;
+				padding: 0.5rem 0.8rem;
+				color: #fff;
+			}
+			.kitchen_table ul li:last-child {
+				border: none;
+			}
+			.kitchen_table ul li button {
+				margin: 0;
+				height: auto;
+				padding: 0.5rem 0.8rem;
+			}
+		</style>
+	</body>
+</html>

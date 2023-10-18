@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Vue.js DZ 2.4</title>
+		<link rel="icon" type="image/x-icon" href="../../favicon.ico" />
+		<link rel="stylesheet" href="../../style.css" />
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+	<body class="result_body">
+		<div class="page_wrapper">
+			<h1>Задача 4</h1>
+			<p class="task_txt">Вивести список як маркований список з елементами у форматі (name: salary)</p>
+
+			<div id="app" class="vue">
+				<div class="sandbox dz_2_4">
+					<ul>
+						<li v-for="el in employees" :key="el.id">{{el.name}} : {{el.salary}}</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			// 1. Імпортуємо createApp
+
+			const { createApp } = Vue
+
+			// 2. Створюємо об'єкт додатку
+			const app = createApp({
+				data() {
+					return {
+						employees: [
+							{ id: 1, name: 'Іван', salary: 10000 },
+							{ id: 2, name: 'Сидор', salary: 20000 },
+							{ id: 3, name: 'Петро', salary: 55000 },
+						],
+					}
+				},
+			})
+
+			// 3. Монтуємо додаток
+			app.mount('#app')
+		</script>
+	</body>
+</html>
