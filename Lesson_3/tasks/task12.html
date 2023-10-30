@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Vue.js DZ 3.12</title>
+		<link rel="icon" type="image/x-icon" href="../../favicon.ico" />
+		<link rel="stylesheet" href="../../style.css" />
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+	<body class="result_body">
+		<div class="page_wrapper">
+			<h1>Задача 12</h1>
+			<p class="task_txt">
+				Мережа магазинів. Дано список відділень та список товарів. Для кожного відділення можна вибирати декілька товарів. Вибирати та
+				відображати перелік вибраних товарів для кожного відділення.
+			</p>
+		</div>
+		<div id="app" class="vue">
+			<div class="stores_wrap">
+				<div class="option_card store_card">
+					<h3>Відділення</h3>
+					<ul>
+						<li v-for="store in stores" :key="store.id">
+							<label>
+								<input type="radio" v-model="selectedStore" :value="store.id" name="storeOpt" />
+								{{store.name}}
+							</label>
+						</li>
+					</ul>
+				</div>
+				<div class="option_card products_card">
+					<h3>Товари</h3>
+					<ul>
+						<li v-for="product in products">
+							<label>
+								<input type="checkbox" v-model="selectedProducts" :value="product.id" :disabled="!selectedStore" />
+								{{product.name}}
+							</label>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<button type="button" class="compose" @click="addSelectedProducts">Додати</button>
+			<div class="option_card result_wrap">
+				<h3>Розподіл товарів</h3>
+				<ul>
+					<li v-for="(result, storeId) in computedResults" :key="storeId">{{ result }}</li>
+				</ul>
+			</div>
+		</div>
+		<script>
+			// 1. Імпортуємо Vue
+			const { createApp } = Vue
+
+			// 2. Створюємо об'єкт додатку
+			const app = createApp({
+				data() {
+					return {
+						stores: [
+							{ id: 1, name: 'Головне' },
+							{ id: 2, name: 'Гуртовий' },
+							{ id: 3, name: 'Магазин 1' },
+							{ id: 4, name: 'Магазин 2' },
+							{ id: 5, name: 'Магазин 3' },
+						],
+						products: [
+							{ id: 1, name: 'Товар 1' },
+							{ id: 2, name: 'Товар 2' },
+							{ id: 3, name: 'Товар 3' },
+							{ id: 4, name: 'Товар 4' },
+							{ id: 5, name: 'Товар 5' },
+							{ id: 6, name: 'Товар 6' },
+							{ id: 7, name: 'Товар 7' },
+							{ id: 8, name: 'Товар 8' },
+							{ id: 9, name: 'Товар 9' },
+							{ id: 10, name: 'Товар 10' },
+						],
+						selectedStore: null,
+						selectedProducts: [],
+						selections: {},
+					}
+				},
+				computed: {
+					computedResults() {
+						const results = {}
+						for (const storeId in this.selections) {
+							const store = this.stores.find((store) => store.id === parseInt(storeId))
+							const selectedProducts = this.selections[storeId].map((productId) => {
+								const product = this.products.find((product) => product.id === productId)
+								return `${product.name}`
+							})
+							results[storeId] = `${store.name}: ${selectedProducts.join(', ')}`
+						}
+						return results
+					},
+				},
+				methods: {
+					addSelectedProducts() {
+						if (this.selectedStore) {
+							if (!this.selections[this.selectedStore]) {
+								this.selections[this.selectedStore] = []
+							}
+							this.selectedProducts.forEach((productId) => {
+								if (!this.selections[this.selectedStore].includes(productId)) {
+									this.selections[this.selectedStore].push(productId)
+								}
+							})
+						}
+						this.selectedProducts = []
+					},
+				},
+			})
+
+			// 3. Монтуємо додаток
+			app.mount('#app')
+		</script>
+		<style>
+			.stores_wrap {
+				display: flex;
+				gap: 2rem;
+				flex-direction: row;
+			}
+			.stores_wrap h3 {
+				color: #fbc02d;
+				text-align: center;
+				font-size: 1.2rem;
+			}
+			.stores_wrap ul,
+			.result_wrap ul li {
+				list-style-type: none;
+				padding: 1rem;
+				border: 0.125rem solid #234;
+				border-radius: 0.5rem;
+				font-size: 1.1rem;
+			}
+			.stores_wrap ul li {
+				padding: 0.25rem;
+			}
+			.stores_wrap ul li label {
+				cursor: pointer;
+			}
+			.result_wrap ul {
+				margin: 0;
+				padding: 0;
+				list-style: none;
+			}
+		</style>
+	</body>
+</html>

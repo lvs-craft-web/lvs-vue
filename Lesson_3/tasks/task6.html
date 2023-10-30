@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Vue.js DZ 3.6</title>
+		<link rel="icon" type="image/x-icon" href="../../favicon.ico" />
+		<link rel="stylesheet" href="../../style.css" />
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+	<body class="result_body">
+		<div class="page_wrapper">
+			<h1>Задача 6</h1>
+			<p class="task_txt">
+				Пари для танців. Поступово вибираємо хлопця, дівчину i додаємо у обрані пари. Пару можна видалити. Поки не вибрано хлопця i дівчину
+				кнопка «Додати» заблокована. Якщо не вистачає хлопців або дівчат вибір також блокується.
+			</p>
+		</div>
+		<div id="app" class="vue dz_3_6">
+			<div class="dance_wrap">
+				<div class="dancers_lists">
+					<div class="list_wrap">
+						<h4>Хлопці</h4>
+						<div class="boys_list dancers_list">
+							<p v-for="boy in boysList" :key="boy.id" @click="choseBoy(boy)" :class="{ selected: selectedBoy === boy }">{{boy.name}}</p>
+						</div>
+					</div>
+					<div class="list_wrap">
+						<h4>Дівчата</h4>
+						<div class="girls_list dancers_list">
+							<p v-for="girl in girlsList" :key="girl.id" @click="choseGirl(girl)" :class="{ selected: selectedGirl === girl }">
+								{{girl.name}}
+							</p>
+						</div>
+					</div>
+				</div>
+				<button type="button" class="create_couple_btn" @click="createCouple" :disabled="!isButtonEnabled">Додати пару</button>
+				<div class="results">
+					<p v-for="(couple,index) in coupleList" :key="index" class="couple">
+						{{ couple.boyName }} та {{ couple.girlName }} <button @click="removeCouple(index)">Видалити</button>
+					</p>
+				</div>
+			</div>
+		</div>
+		<script>
+			// 1. Імпортуємо createApp
+
+			const { createApp } = Vue
+
+			// 2. Створюємо об'єкт додатку
+			const app = createApp({
+				data() {
+					return {
+						boysList: [
+							{ name: 'Петро', id: 1 },
+							{ name: 'Василь', id: 2 },
+							{ name: 'Тарас', id: 3 },
+							{ name: 'Слава', id: 4 },
+							{ name: 'Степан', id: 5 },
+						],
+						girlsList: [
+							{ name: 'Анастасія', id: 1 },
+							{ name: 'Христина', id: 2 },
+							{ name: 'Таня', id: 3 },
+							{ name: 'Софія', id: 4 },
+							{ name: 'Олена', id: 5 },
+							{ name: 'Оксана', id: 6 },
+							{ name: 'Юлія', id: 7 },
+						],
+						coupleList: [],
+						selectedBoy: null,
+						selectedGirl: null,
+					}
+				},
+				computed: {
+					isButtonEnabled() {
+						return this.selectedBoy && this.selectedGirl && this.boysList.length > 0 && this.girlsList.length > 0
+					},
+				},
+				methods: {
+					choseBoy(boy) {
+						this.selectedBoy = boy
+					},
+					choseGirl(girl) {
+						this.selectedGirl = girl
+					},
+					createCouple() {
+						if (this.selectedBoy && this.selectedGirl) {
+							this.coupleList.push({ boyName: this.selectedBoy.name, girlName: this.selectedGirl.name })
+
+							const boyIndex = this.boysList.findIndex((boy) => boy.id === this.selectedBoy.id)
+							const girlIndex = this.girlsList.findIndex((girl) => girl.id === this.selectedGirl.id)
+							if (boyIndex != -1) {
+								this.boysList.splice(boyIndex, 1)
+							}
+							if (girlIndex != -1) {
+								this.girlsList.splice(girlIndex, 1)
+							}
+
+							this.selectedBoy = null
+							this.selectedGirl = null
+						}
+					},
+					removeCouple(index) {
+						const removedCouple = this.coupleList[index]
+						this.coupleList.splice(index, 1)
+
+						// Додавання імен пари назад до списків хлопців та дівчат
+						const boyName = removedCouple.boyName
+						const girlName = removedCouple.girlName
+						this.boysList.push({ name: boyName, id: this.boysList.length + 1 })
+						this.girlsList.push({ name: girlName, id: this.girlsList.length + 1 })
+					},
+				},
+			})
+
+			// 3. Монтуємо додаток
+			app.mount('#app')
+		</script>
+		<style>
+			.dz_3_6 {
+				display: block;
+			}
+			.dance_wrap {
+				display: flex;
+				flex-direction: column;
+			}
+			.dancers_lists {
+				display: flex;
+				justify-content: center;
+				gap: 3rem;
+			}
+			.dancers_list {
+				border: 2px solid #234;
+				padding: 1rem;
+			}
+			.list_wrap {
+				min-width: 200px;
+			}
+			.list_wrap h4 {
+				color: #fbc02d;
+			}
+			.dancers_list p,
+			.couple {
+				font-size: 1.2rem;
+				cursor: pointer;
+				margin: 0 0 1rem;
+				border-bottom: 2px solid #234;
+				padding: 0 0.3125rem 0.3125rem;
+				transition: all 0.3s ease 0s;
+				letter-spacing: 0.125rem;
+			}
+			.couple {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				align-items: center;
+			}
+
+			.couple button {
+				margin: 5px 0;
+				height: auto;
+				padding: 6px 20px;
+			}
+			.dancers_list p:hover {
+				border-color: #f66;
+			}
+			.dancers_list p:last-child {
+				margin: 0;
+			}
+			.create_couple_btn {
+				max-width: 12.5rem;
+				width: 100%;
+				display: block;
+				margin: 2rem auto;
+			}
+			.create_couple_btn:disabled {
+				background: #616263;
+				font-weight: normal !important;
+				color: #b6b7b8;
+			}
+			.selected {
+				background-color: #c59825;
+				color: #fff;
+			}
+		</style>
+	</body>
+</html>

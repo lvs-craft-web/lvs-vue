@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Vue.js DZ 3.8</title>
+		<link rel="icon" type="image/x-icon" href="../../favicon.ico" />
+		<link rel="stylesheet" href="../../style.css" />
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+	<body class="result_body">
+		<div class="page_wrapper">
+			<h1>Задача 8</h1>
+			<p class="task_txt">
+				Дано список автомобілів (марка, рік випуску, ціна). Сформувати елементи для фільтрування з використанням випадаючого списку (контент цих
+				випадаючих списків сформувати у залежності від переданого списку).
+			</p>
+		</div>
+		<div id="app" class="vue">
+			<div class="cars_wrap">
+				<h4>Фільтр пошуку</h4>
+				<div class="cars_filters_wrap">
+					<label>
+						<span>Марка</span>
+						<select v-model="chosenBrand">
+							<option value="" selected disabled>Виберіть марку</option>
+							<option v-for="car in carsList" :key="car.id" :value="car.mark">{{ car.mark }}</option>
+						</select>
+					</label>
+					<label>
+						<span>Рік випуску</span>
+						<select v-model="chosenYear">
+							<option value="" selected disabled>Виберіть рік</option>
+							<option v-for="car in carsList" :key="car.id" :value="car.year">{{ car.year }}</option>
+						</select>
+					</label>
+					<button type="button" @click="onReset">Скинути фільтри</button>
+				</div>
+				<div class="cars_list_wrap">
+					<ol class="car_list">
+						<li v-for="(car,index) in filteredCarsList" :key="car.id">
+							<span>{{index+1}}. {{ car.mark }} {{ car.year }}р. {{ car.price }}$</span>
+						</li>
+					</ol>
+				</div>
+			</div>
+		</div>
+		<script>
+			// 1. Імпортуємо createApp
+
+			const { createApp } = Vue
+
+			// 2. Створюємо об'єкт додатку
+			const app = createApp({
+				data() {
+					return {
+						carsList: [
+							{ mark: 'HIMARS', year: 2010, price: 500000, id: 1 },
+							{ mark: 'Honda', year: 2022, price: 80000, id: 2 },
+							{ mark: 'Mercedes-Benz', year: 2021, price: 150000, id: 3 },
+							{ mark: 'BMW', year: 2020, price: 120000, id: 4 },
+							{ mark: 'Volkswagen', year: 2019, price: 90000, id: 5 },
+							{ mark: 'Audi', year: 2018, price: 110000, id: 6 },
+							{ mark: 'Renault', year: 2017, price: 70000, id: 7 },
+							{ mark: 'Citroen', year: 2016, price: 60000, id: 8 },
+							{ mark: 'Peugeot', year: 2015, price: 50000, id: 9 },
+							{ mark: 'Hyundai', year: 2014, price: 40000, id: 10 },
+							{ mark: 'Kia', year: 2013, price: 30000, id: 11 },
+							{ mark: 'Skoda', year: 2012, price: 20000, id: 12 },
+							{ mark: 'Dacia', year: 2011, price: 10000, id: 13 },
+							{ mark: 'Toyota', year: 2023, price: 100000, id: 14 },
+						],
+						chosenBrand: null,
+						chosenYear: null,
+					}
+				},
+				computed: {
+					filteredCarsList() {
+						let filteredList = this.carsList
+						if (this.chosenBrand) {
+							filteredList = filteredList.filter((car) => car.mark === this.chosenBrand)
+						}
+						if (this.chosenYear) {
+							filteredList = filteredList.filter((car) => car.year === parseInt(this.chosenYear))
+						}
+						return filteredList
+					},
+				},
+				methods: {
+					onReset() {
+						this.chosenBrand = null
+						this.chosenYear = null
+					},
+				},
+			})
+
+			// 3. Монтуємо додаток
+			app.mount('#app')
+		</script>
+		<style>
+			.cars_filters_wrap,
+			.cars_filters_wrap label {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-around;
+				align-items: flex-start;
+			}
+			.cars_filters_wrap {
+				gap: 2rem;
+			}
+			.cars_filters_wrap label {
+				gap: 1rem;
+				align-items: stretch;
+				flex-direction: column;
+			}
+			.cars_filters_wrap label select {
+				min-width: 5rem;
+				min-height: 1.6875rem;
+			}
+			.car_list li {
+				padding: 0.5rem 1rem;
+			}
+			.cars_filters_wrap select {
+				display: block;
+				border-radius: 0.375rem;
+				background-color: rgba(255, 255, 255, 0.8);
+			}
+		</style>
+	</body>
+</html>

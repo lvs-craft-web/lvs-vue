@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Vue.js DZ 3.9</title>
+		<link rel="icon" type="image/x-icon" href="../../favicon.ico" />
+		<link rel="stylesheet" href="../../style.css" />
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+	<body class="result_body">
+		<div class="page_wrapper">
+			<h1>Задача 9</h1>
+			<p class="task_txt">
+				Перекладач. Користувачу виводять змішані картки з словами на англійській і українській мові. Користувач поступово клікає на картки
+				(виділяємо синьою рамкою). Якщо знайдено правильні пари карток, що відповідають одному слову, то видаляємо ці картки. Інакше - виділяємо
+				червоною рамкою і через секунду забираємо рамку.
+			</p>
+		</div>
+		<div id="app" class="vue">
+			<div class="translator_wrap">
+				<h3>Знайти пари слів</h3>
+				<div class="game_table">
+					<div class="en_side game_side">
+						<p
+							v-for="word in createEnArr"
+							:key="word.id"
+							@click="selectCard(word, 'en')"
+							:class="{ selected: isCardSelected(word, 'en'), matched: isCardMatched(word), wrong: isCardWrong(word) }">
+							{{ word.en }}
+						</p>
+					</div>
+					<div class="ua_side game_side">
+						<p
+							v-for="word in createUaArr"
+							:key="word.id"
+							@click="selectCard(word, 'ua')"
+							:class="{ selected: isCardSelected(word, 'ua'), matched: isCardMatched(word), wrong: isCardWrong(word) }">
+							{{ word.ua }}
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			// 1. Імпортуємо Vue
+			const { createApp } = Vue
+
+			// 2. Створюємо об'єкт додатку
+			const app = createApp({
+				data() {
+					return {
+						wordsArr: [
+							{ en: 'hello', ua: 'привіт', id: 1 },
+							{ en: 'world', ua: 'світ', id: 2 },
+							{ en: 'dog', ua: 'собака', id: 3 },
+							{ en: 'cat', ua: 'кішка', id: 4 },
+							{ en: 'house', ua: 'будинок', id: 5 },
+							{ en: 'car', ua: 'машина', id: 6 },
+							{ en: 'tree', ua: 'дерево', id: 7 },
+							{ en: 'flower', ua: 'квітка', id: 8 },
+							{ en: 'sky', ua: 'небо', id: 9 },
+							{ en: 'sun', ua: 'сонце', id: 10 },
+						],
+						selectedCards: [],
+						matchedPairs: [],
+					}
+				},
+				computed: {
+					createUaArr() {
+						return this.shuffleArr(this.wordsArr.filter((word) => word.ua))
+					},
+					createEnArr() {
+						return this.shuffleArr(this.wordsArr.filter((word) => word.en))
+					},
+				},
+				methods: {
+					// shuffleArr(arr) {
+					// 	arr = [...arr]
+					// 	for (let i = arr.length - 1; i > 0; i--) {
+					// 		const j = Math.floor(Math.random() * (i + 1))
+					// 		;[arr[i], arr[j]] = [arr[j], arr[i]]
+					// 	}
+					// 	return arr
+					// },
+					shuffleArr(arr) {
+						return arr.slice().sort(() => Math.random() - 0.5)
+					},
+					selectCard(word, lang) {
+						if (this.selectedCards.length < 2 && !this.selectedCards.includes(word)) {
+							this.selectedCards.push({ word, lang })
+							if (this.selectedCards.length === 2) {
+								if (
+									this.selectedCards[0].word.en === this.selectedCards[1].word.en ||
+									this.selectedCards[0].word.ua === this.selectedCards[1].word.ua
+								) {
+									this.matchedPairs.push(this.selectedCards[0].word)
+									this.matchedPairs.push(this.selectedCards[1].word)
+									this.selectedCards = []
+								} else {
+									setTimeout(() => {
+										this.selectedCards[0].word.isWrong = true
+										this.selectedCards[1].word.isWrong = true
+										setTimeout(() => {
+											this.selectedCards[0].word.isWrong = false
+											this.selectedCards[1].word.isWrong = false
+											this.selectedCards = []
+										}, 1000)
+									}, 1000)
+								}
+							}
+						}
+					},
+					isCardSelected(word, lang) {
+						return this.selectedCards.some((card) => card.word === word && card.lang === lang)
+					},
+					isCardMatched(word) {
+						return this.matchedPairs.includes(word)
+					},
+					isCardWrong(word) {
+						return word.isWrong
+					},
+				},
+			})
+
+			// 3. Монтуємо додаток
+			app.mount('#app')
+		</script>
+		<style>
+			.game_table {
+				display: flex;
+				flex-direction: row;
+				gap: 2rem;
+			}
+
+			.game_side {
+				border: 0.1875rem solid #234;
+				border-radius: 0.3125rem;
+				padding: 0.5rem;
+			}
+
+			.game_side p {
+				cursor: pointer;
+				border: 0.125rem solid #234;
+				border-radius: 0.4rem;
+				padding: 0.5rem 1rem;
+				margin: 0.5rem;
+				transition: all 0.3s ease 0s;
+				text-transform: capitalize;
+			}
+
+			.game_table p:hover {
+				background-color: rgba(255, 255, 255, 0.1);
+			}
+
+			.game_side p.selected {
+				border-color: blue;
+			}
+
+			.matched {
+				display: none;
+			}
+
+			.game_side p.wrong {
+				border-color: red;
+			}
+		</style>
+	</body>
+</html>
